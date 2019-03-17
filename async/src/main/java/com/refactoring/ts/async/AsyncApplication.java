@@ -34,6 +34,6 @@ public class AsyncApplication {
           .apis(RequestHandlerSelectors.any())              
           .paths(PathSelectors.ant("/api/**"))                          
           .build();                                           
-    }
+        }
 
 }
