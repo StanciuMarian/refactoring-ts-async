@@ -2,45 +2,66 @@
   <form>
     <div class="row">
       <div class="col-4 form-group">
-        <label for="exampleFormControlSelect1">Example select</label>
-        <select class="form-control" id="exampleFormControlSelect1">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
+        <label for="citySelect">Select City</label>
+        <select
+          [(ngModel)]="selectedCityCode"
+          id="citySelect"
+          name="selectCity"
+          class="form-control">
+          <option *ngFor="let city of cities"
+            [value]="city.cityCode">
+            {{city.cityName}}
+          </option>
         </select>
       </div>
     </div>
     <div class="row">
       <div class="col-4 form-group">
-        <label for="exampleFormControlSelect2">Example select</label>
-        <select class="form-control" id="exampleFormControlSelect2">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
+        <label for="subsidiarySelect">Select subsidiary</label>
+        <select 
+          id="subsidiarySelect"
+          class="form-control"
+          name="selectForSubsidiary">
+          <option *ngFor="let subsidiary of subsidiaries"
+            [value]="subsidiary.subsidiaryCode">
+            {{subsidiary.subsidiaryName}}
+          </option>
         </select>
       </div>
     </div>
     <div class="row">
       <div class="col-4 form-group">
-        <label for="exampleFormControlSelect3">Example select</label>
-        <select class="form-control" id="exampleFormControlSelect3">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
+        <label for="operationSelect">Select Operation</label>
+        <select 
+          id="operationSelect"
+          class="form-control"
+          name="selectForOperations">
+          <option *ngFor="let operation of operations">
+            {{operation.operationName}}
+          </option>
         </select>
       </div>
     </div>
     <div class="row">
       <div class="col-4 form-group">
-        <label for="exampleFormControlInput1">Email address</label>
-        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+        <label for="emailAddressInput">Email address</label>
+        <input type="email" class="form-control" id="emailAddressInput" placeholder="name@example.com">
       </div>
     </div>
     <div class="row">
       <div class="col-4">
-        <button class="btn btn-primary">Submit</button>
-        <button class="btn btn-secondary ml-2">Reinit</button>
+        <button type="button" class="btn btn-primary" (click)="showConfirmationDialog()">Submit</button>
+        <button type="button" class="btn btn-secondary ml-2" (click)="resetForm()">Reinit</button>
       </div>
     </div>
   </form>
 </div>
+
+
+<p-dialog [(visible)]="isConfirmationDialogDisplayed" [modal]="true">
+  Are you sure blablablaba ?
+  <p-footer>
+    <button class="btn btn-primary">Yes</button>
+    <button class="btn btn-danger">No</button>
+  </p-footer>
+</p-dialog>
