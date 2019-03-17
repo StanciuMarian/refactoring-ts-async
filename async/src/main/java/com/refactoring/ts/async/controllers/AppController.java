@@ -52,7 +52,6 @@ public class AppController {
 					.collect(Collectors.toList());
 	}
 	
-	
 	@GetMapping("/operation")
 	public List<OperationDto> getOperations() {
 		return operationRepo.findAll().stream()
