@@ -30,17 +30,17 @@ export class RedeemCouponComponent {
             private userApi: UserApi,
             private toastr: Toastr) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     forkJoin(this.userApi.getCurrentUser(), this.api.getAllCountries()).subscribe(data => {
       this.currentUser = data[0];
-      this.selectedCountryId = this.currentUser.countryId;      
       this.countries = data[1];   
+      this.selectedCountryId = this.currentUser.countryId;      
       this.getCities();
     });
 
   }
 
-  getCities() {
+  getCities(): void {
     this.api.getCitiesByCountry(this.selectedCountryId).subscribe(cities => {
       this.cities = cities;
       this.selectedCityId = this.currentUser.cityId;
@@ -48,35 +48,31 @@ export class RedeemCouponComponent {
     })
   }
 
-  getStoresByCity(cityId: number) {
+  getStoresByCity(cityId: number): void {
     this.api.getStoresByCity(cityId).subscribe(stores => {
       this.stores = stores;
       this.coupon.storeId = stores[0].id;
     });
   }
 
+  validateBF(): void {
+    this.api.checkBF(this.coupon.bf, this.coupon.storeId).subscribe(() => {
+      this.showConfirmationDialog();
+    })
+  }
+
+  redeemCoupon(): void {
+    this.api.requestCoupon(this.coupon).subscribe((redeemCode) => {
+      this.toastr.success("Success", `Your redeem code is ${redeemCode}`);
+      this.hideConfirmationDialog();
+    })
+  }
+
   showConfirmationDialog() {
     this.isConfirmationDialogDisplayed = true;
   }
 
-  resetForm() {
-
-  }
-
-  validateBF() {
-    this.api.checkBF(this.coupon.bf, this.coupon.storeId).subscribe(() => {
-      this.isConfirmationDialogDisplayed = true;
-    })
-  }
-
-  redeemCoupon() {
-    this.api.requestCoupon(this.coupon).subscribe((redeemCode) => {
-      this.toastr.success("Success", `Your redeem code is ${redeemCode}`);
-      this.isConfirmationDialogDisplayed = false;
-    })
-  }
-
-  cancelCouponRequest() {
+  hideConfirmationDialog() {
     this.isConfirmationDialogDisplayed = false;
   }
 }
