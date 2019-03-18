@@ -1,4 +1,6 @@
 export class UserDto {
-    firstName: string;
-    lastName: string;
+    cityId: number;
+    cnp: string;
+    countryId: number;
+    fullName: string;
 }

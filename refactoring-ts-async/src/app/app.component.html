@@ -1,55 +1,58 @@
 <div class="ml-4 mt-4">
   <form>
     <div class="row">
-      <div class="col-4 form-group">
-        <label for="citySelect">Select City</label>
+      <div class="col-8 form-group">
+        <label for="countrySelect">Select Country</label>
         <select
-          [(ngModel)]="selectedCityCode"
-          id="citySelect"
-          name="selectCity"
+          id="countrySelect"
+          [(ngModel)]="selectedCountryId"
+          name="selectCountry"
+          (change)="getCities()"
           class="form-control">
+          <option *ngFor="let country of countries"
+            [value]="country.id">
+            {{country.name}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-8 form-group">
+        <label for="citySelect">Select city</label>
+        <select 
+          id="citySelect"
+          [(ngModel)]="selectedCityId"
+          class="form-control"
+          name="selectForCity">
           <option *ngFor="let city of cities"
-            [value]="city.cityCode">
-            {{city.cityName}}
+            [value]="city.id">
+            {{city.name}}
           </option>
         </select>
       </div>
     </div>
     <div class="row">
-      <div class="col-4 form-group">
-        <label for="subsidiarySelect">Select subsidiary</label>
+      <div class="col-8 form-group">
+        <label for="storeSelect">Select Operation</label>
         <select 
-          id="subsidiarySelect"
+          id="storeSelect"
+          [(ngModel)]="selectedStoreId"
           class="form-control"
-          name="selectForSubsidiary">
-          <option *ngFor="let subsidiary of subsidiaries"
-            [value]="subsidiary.subsidiaryCode">
-            {{subsidiary.subsidiaryName}}
+          name="selectForStores">
+          <option *ngFor="let store of stores" [value]="store.id">
+            {{store.nameWithType()}}
           </option>
         </select>
       </div>
     </div>
     <div class="row">
-      <div class="col-4 form-group">
-        <label for="operationSelect">Select Operation</label>
-        <select 
-          id="operationSelect"
-          class="form-control"
-          name="selectForOperations">
-          <option *ngFor="let operation of operations">
-            {{operation.operationName}}
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-4 form-group">
+      <div class="col-8 form-group">
         <label for="emailAddressInput">Email address</label>
         <input type="email" class="form-control" id="emailAddressInput" placeholder="name@example.com">
       </div>
     </div>
     <div class="row">
-      <div class="col-4">
+      <div class="col-8">
         <button type="button" class="btn btn-primary" (click)="showConfirmationDialog()">Submit</button>
         <button type="button" class="btn btn-secondary ml-2" (click)="resetForm()">Reinit</button>
       </div>

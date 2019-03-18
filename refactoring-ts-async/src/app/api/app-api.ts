@@ -4,9 +4,9 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { constants } from "../common/helpers/constants";
 import { HttpHeaders } from "@angular/common/http";
+import { StoreDto } from "./dto/StoreDto";
+import { CountryDto } from "./dto/CountryDto";
 import { CityDto } from "./dto/CityDto";
-import { OperationDto } from "./dto/OperationDto";
-import { SubsidiaryDto } from "./dto/SubsidiaryDto";
 
 /**
  * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
@@ -27,35 +27,26 @@ export class AppApi {
      * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
      * 
      */
-    getCities(): Observable<CityDto[]> {
-        return this.http.get<CityDto[]>(`${constants.APP_ENDPOINT}/cities`,{})
+    getStoresByCity(cityId: number): Observable<StoreDto[]> {
+        return this.http.get<StoreDto[]>(`${constants.APP_ENDPOINT}/cities/${cityId}/stores`,{})
+        	.pipe(map(response => response.map(entry => Object.assign(new StoreDto(), entry))))
+    }
+
+    /**
+     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
+     * 
+     */
+    getAllCountries(): Observable<CountryDto[]> {
+        return this.http.get<CountryDto[]>(`${constants.APP_ENDPOINT}/countries`,{})
+        	.pipe(map(response => response.map(entry => Object.assign(new CountryDto(), entry))))
+    }
+
+    /**
+     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
+     * 
+     */
+    getCitiesByCountry(countryId: number): Observable<CityDto[]> {
+        return this.http.get<CityDto[]>(`${constants.APP_ENDPOINT}/countries/${countryId}/cities`,{})
         	.pipe(map(response => response.map(entry => Object.assign(new CityDto(), entry))))
-    }
-
-    /**
-     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
-     * 
-     */
-    getOperations(): Observable<OperationDto[]> {
-        return this.http.get<OperationDto[]>(`${constants.APP_ENDPOINT}/operation`,{})
-        	.pipe(map(response => response.map(entry => Object.assign(new OperationDto(), entry))))
-    }
-
-    /**
-     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
-     * 
-     */
-    getSubsidiariesByCityCode(cityCode: string): Observable<SubsidiaryDto[]> {
-        return this.http.get<SubsidiaryDto[]>(`${constants.APP_ENDPOINT}/subisidiariesByCityCode?cityCode=${cityCode}`,{})
-        	.pipe(map(response => response.map(entry => Object.assign(new SubsidiaryDto(), entry))))
-    }
-
-    /**
-     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
-     * 
-     */
-    getSubsidiariesByOperationCode(operationCode: string): Observable<SubsidiaryDto[]> {
-        return this.http.get<SubsidiaryDto[]>(`${constants.APP_ENDPOINT}/subisidiariesByOperationCode?operationCode=${operationCode}`,{})
-        	.pipe(map(response => response.map(entry => Object.assign(new SubsidiaryDto(), entry))))
     }
 }

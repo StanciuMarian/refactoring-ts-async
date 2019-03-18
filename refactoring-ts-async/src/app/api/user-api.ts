@@ -25,8 +25,8 @@ export class UserApi {
      * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
      * 
      */
-    getUsers(): Observable<UserDto[]> {
-        return this.http.get<UserDto[]>(`${constants.APP_ENDPOINT}/users`,{})
-        	.pipe(map(response => response.map(entry => Object.assign(new UserDto(), entry))))
+    getCurrentUser(): Observable<UserDto> {
+        return this.http.get<UserDto>(`${constants.APP_ENDPOINT}/current-user`,{})
+        	.pipe(map(response => Object.assign(new UserDto(), response)))
     }
 }

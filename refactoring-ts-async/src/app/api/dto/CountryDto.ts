@@ -1,4 +1,4 @@
-export class CityDto {
+export class CountryDto {
     id: number;
     name: string;
 }
