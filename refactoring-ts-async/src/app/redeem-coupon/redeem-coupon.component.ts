@@ -18,7 +18,7 @@ export class RedeemCouponComponent {
   countries: CountryDto[] = [];
   cities: CityDto[] = [];
   stores: StoreDto[] = [];
-  currentUser : UserDto;
+  currentUser: UserDto;
 
   coupon = new CouponForm();
   selectedCountryId: number;
@@ -68,11 +68,11 @@ export class RedeemCouponComponent {
     })
   }
 
-  showConfirmationDialog() {
+  showConfirmationDialog(): void {
     this.isConfirmationDialogDisplayed = true;
   }
 
-  hideConfirmationDialog() {
+  hideConfirmationDialog(): void {
     this.isConfirmationDialogDisplayed = false;
   }
 }
