@@ -22,6 +22,9 @@ export class AppComponent {
   selectedCityId: number;
   selectedStoreId: number;
 
+  cnp: string;
+  bf: string;
+
   isConfirmationDialogDisplayed = false;
 
   constructor(private api: AppApi, private userApi: UserApi) {}
@@ -58,5 +61,24 @@ export class AppComponent {
 
   resetForm() {
 
+  }
+
+  validateBF() {
+
+  }
+  
+  submitForm() {
+
+    // this.api.validateBF().subscribe(modal)/???
+    // TODO validezi
+    // TODO user confirma
+    // TODO send:
+    let data = {
+      storeId: this.selectedStoreId,
+      cnp: this.cnp,
+      bf: this.bf
+    };
+
+    // this.api.requestCoupon(data);
   }
 }

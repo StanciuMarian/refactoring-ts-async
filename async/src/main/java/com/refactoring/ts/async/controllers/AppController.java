@@ -6,16 +6,19 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.refactoring.ts.async.dto.CountryDto;
-import com.refactoring.ts.async.dto.StoreDto;
 import com.refactoring.ts.async.dto.CityDto;
+import com.refactoring.ts.async.dto.CountryDto;
+import com.refactoring.ts.async.dto.CouponForm;
+import com.refactoring.ts.async.dto.StoreDto;
+import com.refactoring.ts.async.repositories.CityRepository;
 import com.refactoring.ts.async.repositories.CountryRepository;
 import com.refactoring.ts.async.repositories.StoreRepository;
-import com.refactoring.ts.async.repositories.CityRepository;
 
 @RestController
 @RequestMapping("/api")
@@ -30,6 +33,9 @@ public class AppController {
 	
 	@Autowired
 	private StoreRepository storeRepo;
+	
+	@Autowired
+	private CouponService couponService;
 	
 	
 	@GetMapping("/countries")
@@ -51,6 +57,22 @@ public class AppController {
 		return storeRepo.findAllByCityId(cityId).stream()
 					.map(StoreDto::new)
 					.collect(Collectors.toList());
+	}
+	
+	
+	@GetMapping("/checkBF")
+	public void checkBF(@RequestParam String bf, @RequestParam long storeId) {
+		if (!couponService.validateBF(bf, storeId)) {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	@PostMapping("/coupon")
+	public String requestCoupon(@RequestBody CouponForm form) {
+		if (!couponService.validateBF(form.bf, form.storeId)) {
+			throw new IllegalArgumentException();
+		}
+		return couponService.generateCoupon(form.bf, form.cnp);
 	}
 	
 }
