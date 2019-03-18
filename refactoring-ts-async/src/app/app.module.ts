@@ -2,15 +2,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { RedeemCouponComponent } from './redeem-coupon/redeem-coupon.component';
+import { MessageService } from 'primeng/components/common/messageservice';
+import { HttpRequestsInterceptor } from './services/http-interceptor.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RedeemCouponComponent
   ],
   imports: [
     BrowserModule,
@@ -18,9 +22,16 @@ import { AppComponent } from './app.component';
     FormsModule,
     HttpClientModule,
     DialogModule,
-    AppRoutingModule
+    ToastModule
   ],
-  providers: [],
+  providers: [
+    MessageService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestsInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -7,6 +7,7 @@ import { HttpHeaders } from "@angular/common/http";
 import { StoreDto } from "./dto/StoreDto";
 import { CountryDto } from "./dto/CountryDto";
 import { CityDto } from "./dto/CityDto";
+import { CouponForm } from "./dto/CouponForm";
 
 /**
  * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
@@ -21,6 +22,14 @@ import { CityDto } from "./dto/CityDto";
 @Injectable({providedIn: 'root'})
 export class AppApi {
     constructor(private http: HttpClient) {
+    }
+
+    /**
+     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
+     * 
+     */
+    checkBF(bf: string, storeId: number): Observable<void> {
+        return this.http.get<void>(`${constants.APP_ENDPOINT}/checkBF?bf=${bf}&storeId=${storeId}`,{})
     }
 
     /**
@@ -48,5 +57,13 @@ export class AppApi {
     getCitiesByCountry(countryId: number): Observable<CityDto[]> {
         return this.http.get<CityDto[]>(`${constants.APP_ENDPOINT}/countries/${countryId}/cities`,{})
         	.pipe(map(response => response.map(entry => Object.assign(new CityDto(), entry))))
+    }
+
+    /**
+     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
+     * 
+     */
+    requestCoupon(form: CouponForm): Observable<string> {
+        return this.http.post(`${constants.APP_ENDPOINT}/coupon`,form,{responseType: 'text'})
     }
 }

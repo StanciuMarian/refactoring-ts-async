@@ -11,6 +11,7 @@ import com.refactoring.ts.async.repositories.StoreRepository;
 
 @Service
 public class CouponService {
+	
 	@Autowired
 	private StoreRepository storeRepo;
 	
