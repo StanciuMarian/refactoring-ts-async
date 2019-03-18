@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.refactoring.ts.async.beans.User;
 import com.refactoring.ts.async.dto.UserDto;
 import com.refactoring.ts.async.repositories.UserRepository;
 
@@ -18,10 +19,9 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepo;
 	
-	@GetMapping("/users")
-	public List<UserDto> getUsers() {
-		return userRepo.findAll().stream()
-				.map(UserDto::new)
-				.collect(Collectors.toList());
+	@GetMapping("/current-user") 
+	public UserDto getCurrentUser() {
+		User onlyUser = userRepo.findAll().get(0);
+		return new UserDto(onlyUser);
 	}
 }

@@ -10,53 +10,53 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-public class City {
+public class Country {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "city")
-	private List<Store> stores = new ArrayList<>();
-	
 	private String name;
+	
+	@OneToMany(cascade= CascadeType.ALL, mappedBy = "country")
+	private List<City> cities = new ArrayList<>();
 
-	@ManyToOne
-	private Country country;
-
-	private City() {
+	private Country() {
 	}
-	public City(String name) {
+
+	public Country(String name) {
 		this.name = name;
 	}
+
+	public List<City> getCities() {
+		return unmodifiableList(cities);
+	}
+
+	public Country addCity(City city) {
+		cities.add(city);
+		city.setCountry(this);
+		return this;
+	}
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public List<Store> getStores() {
-		return unmodifiableList(stores);
-	}
-	public City addStore(Store store) {
-		stores.add(store);
-		store.setCity(this);
-		return this;
-	}
+
 	public String getName() {
 		return name;
 	}
-	public City setName(String name) {
-		this.name = name;
+
+	public Country setName(String cityName) {
+		this.name = cityName;
 		return this;
 	}
-	public void setCountry(Country country) {
-		this.country = country;
-	}
 	
 	
-	
- }
+	 
+}

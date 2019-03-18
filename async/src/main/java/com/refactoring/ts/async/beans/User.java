@@ -12,9 +12,13 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String firstName;
+	private Long countryId;
+
+	private Long cityId;
 	
-	private String lastName;
+	private String cnp;
+	
+	private String fullName;
 
 	public Long getId() {
 		return id;
@@ -24,19 +28,42 @@ public class User {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public Long getCountryId() {
+		return countryId;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public User setCountryId(Long countryId) {
+		this.countryId = countryId;
+		return this;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public Long getCityId() {
+		return cityId;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public User setCityId(Long cityId) {
+		this.cityId = cityId;
+		return this;
 	}
+
+	public String getCnp() {
+		return cnp;
+	}
+
+	public User setCnp(String cnp) {
+		this.cnp = cnp;
+		return this;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public User setFullName(String fullName) {
+		this.fullName = fullName;
+		return this;
+	}
+	
+	
+
 }
