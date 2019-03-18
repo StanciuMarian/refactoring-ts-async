@@ -18,7 +18,6 @@ export class RedeemCouponComponent {
   countries: CountryDto[] = [];
   cities: CityDto[] = [];
   stores: StoreDto[] = [];
-  currentUser: UserDto;
 
   coupon = new CouponForm();
   selectedCountryId: number;
@@ -32,24 +31,27 @@ export class RedeemCouponComponent {
 
   ngOnInit(): void {
     forkJoin(this.userApi.getCurrentUser(), this.api.getAllCountries()).subscribe(data => {
-      this.currentUser = data[0];
       this.countries = data[1];   
-      this.selectedCountryId = this.currentUser.countryId;      
+      this.initCurrentUser(data[0]);
       this.getCities();
     });
+  }
 
+  initCurrentUser(currentUser: UserDto) {
+    //mai trebuie sa salvam userul daca il folosim doar la initializarea asta ???
+    this.selectedCountryId = currentUser.countryId;
+    this.selectedCityId = currentUser.cityId;
   }
 
   getCities(): void {
     this.api.getCitiesByCountry(this.selectedCountryId).subscribe(cities => {
       this.cities = cities;
-      this.selectedCityId = this.currentUser.cityId;
-      this.getStoresByCity(this.selectedCityId);
+      this.getStoresByCity();
     })
   }
 
-  getStoresByCity(cityId: number): void {
-    this.api.getStoresByCity(cityId).subscribe(stores => {
+  getStoresByCity(): void {
+    this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
       this.stores = stores;
       this.coupon.storeId = stores[0].id;
     });
