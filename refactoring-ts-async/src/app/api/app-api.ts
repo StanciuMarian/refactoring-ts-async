@@ -54,8 +54,8 @@ export class AppApi {
      * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
      * 
      */
-    getCitiesByCountry(countryId: number): Observable<CityDto[]> {
-        return this.http.get<CityDto[]>(`${constants.APP_ENDPOINT}/countries/${countryId}/cities`,{})
+    getCitiesByCountry(countryIso: string): Observable<CityDto[]> {
+        return this.http.get<CityDto[]>(`${constants.APP_ENDPOINT}/countries/${countryIso}/cities`,{})
         	.pipe(map(response => response.map(entry => Object.assign(new CityDto(), entry))))
     }
 

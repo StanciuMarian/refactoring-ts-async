@@ -20,6 +20,8 @@ public class Country {
 	
 	private String name;
 	
+	private String iso;
+	
 	@OneToMany(cascade= CascadeType.ALL, mappedBy = "country")
 	private List<City> cities = new ArrayList<>();
 
@@ -50,6 +52,15 @@ public class Country {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getIso() {
+		return iso;
+	}
+
+	public Country setIso(String iso) {
+		this.iso = iso;
+		return this;
 	}
 
 	public Country setName(String cityName) {

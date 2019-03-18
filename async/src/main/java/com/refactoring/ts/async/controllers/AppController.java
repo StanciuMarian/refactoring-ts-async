@@ -45,9 +45,9 @@ public class AppController {
 					.collect(Collectors.toList());
 	}
 	
-	@GetMapping("/countries/{countryId}/cities")
-	public List<CityDto> getCitiesByCountry(@PathVariable Long countryId) {
-		return cityRepo.findAllByCountryId(countryId).stream()
+	@GetMapping("/countries/{countryIso}/cities")
+	public List<CityDto> getCitiesByCountry(@PathVariable String countryIso) {
+		return cityRepo.findAllByCountryIso(countryIso).stream()
 					.map(CityDto::new)
 					.collect(Collectors.toList());
 	}

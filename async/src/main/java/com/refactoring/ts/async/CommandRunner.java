@@ -31,6 +31,7 @@ public class CommandRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		Country romania = new Country("Romania")
+			.setIso("RO")
 			.addCity(new City("Bucharest")
 					.addStore(new Store("SmartStore Militari", Type.MEDIUM))
 					.addStore(new Store("SmartStore Metrou Politehnica", Type.SMALL))
@@ -40,6 +41,7 @@ public class CommandRunner implements CommandLineRunner {
 					.addStore(new Store("SmartStore Gara de Sud", Type.MEDIUM))
 					.addStore(new Store("SmartStore A7 #sîeu", Type.LARGE)));
 		Country hungary = new Country("Hungary")
+				.setIso("HU")
 				.addCity(new City("Budapesta")
 						.addStore(new Store("SmartStore Budapesta North Train Station", Type.MEDIUM))
 						.addStore(new Store("SmartStore Kaszásdűlő", Type.LARGE))

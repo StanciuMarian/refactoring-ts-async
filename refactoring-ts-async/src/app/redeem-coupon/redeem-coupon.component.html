@@ -3,9 +3,11 @@
     <div class="row">
       <div class="col-8 form-group">
         <label for="countrySelect">Select Country</label>
-        <select id="countrySelect" [(ngModel)]="selectedCountryId" name="selectCountry" (change)="getCities()"
-          class="form-control">
-          <option *ngFor="let country of countries" [value]="country.id">
+        <select id="countrySelect" [(ngModel)]="selectedCountryIso" name="selectCountry" 
+        (change)="onCountryChanged(this.selectedCountryIso)"
+        class="form-control">
+        <!-- (change)="getCities()" -->
+          <option *ngFor="let country of countries" [value]="country.iso">
             {{country.name}}
           </option>
         </select>
