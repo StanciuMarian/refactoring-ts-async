@@ -6,8 +6,9 @@ import { UserDto } from '../api/dto/UserDto';
 import { CouponForm } from '../api/dto/CouponForm';
 import { AppApi } from '../api/app-api';
 import { UserApi } from '../api/user-api';
-import { forkJoin } from 'rxjs';
+import { forkJoin, observable, Observable, Subject } from 'rxjs';
 import { Toastr } from '../services/toastr.service';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'redeem-coupon-form',
@@ -19,9 +20,11 @@ export class RedeemCouponComponent {
   cities: CityDto[] = [];
   stores: StoreDto[] = [];
 
-  coupon = new CouponForm();
+  couponForm = new CouponForm();
   selectedCountryIso: string;
   selectedCityId: number;
+
+  couponCode: string; // TODO display in page.
 
   isConfirmationDialogDisplayed = false;
 
@@ -63,7 +66,7 @@ export class RedeemCouponComponent {
           this.api.getStoresByCity(this.selectedCityId).toPromise()
             .then(stores => {
               this.stores = stores;
-              this.coupon.storeId = stores[0].id;
+              this.couponForm.storeId = stores[0].id;
             })
             .catch(() => console.log('error on third request'))
       })
@@ -80,7 +83,7 @@ export class RedeemCouponComponent {
           this.api.getStoresByCity(this.selectedCityId).toPromise()
             .then(stores => {
               this.stores = stores;
-              this.coupon.storeId = stores[0].id;
+              this.couponForm.storeId = stores[0].id;
             })
             .catch(() => console.log('error on third request'))
       })
@@ -156,26 +159,34 @@ export class RedeemCouponComponent {
   //   });
   // }
 
-  validateBF(): void {
-    this.api.checkBF(this.coupon.bf, this.coupon.storeId).subscribe(() => {
-      this.showConfirmationDialog();
-    })
+  modalObserv = new Subject();
+
+  validateBF(): void {   
+
+    this.api.checkBF(this.couponForm.bf, this.couponForm.storeId)
+    .pipe(mergeMap(this.showConfirmationDialog.bind(this)))
+    .pipe(mergeMap(() => this.api.requestCoupon(this.couponForm)))
+    .subscribe((couponCode) => this.couponCode = couponCode)
   }
 
+  //apasa OK
   redeemCoupon(): void {
-    this.api.requestCoupon(this.coupon).subscribe((redeemCode) => {
-      this.toastr.success("Success", `Your redeem code is ${redeemCode}`);
-      this.hideConfirmationDialog();
-    })
+    this.modalObserv.next();
+    this.hideConfirmationDialog();
+    // this.api.requestCoupon(this.coupon).subscribe((redeemCode) => {
+    //   this.toastr.success("Success", `Your redeem code is ${redeemCode}`);
+    //   this.hideConfirmationDialog();
+    // })
   }
 
   //sa scoatem modala separat sa comunica cu componenta asta prin serviciu ? 
   //nu prea e legat de asincronism, dar am putea arata ce mai poti face cu observables
 
   // V: schiteaza si codul pentru asta, da. Daca ne miscam repede poate incape si aia (alegem la runtime :)
-  
-  showConfirmationDialog(): void {
+
+  showConfirmationDialog(): Subject<any> {
     this.isConfirmationDialogDisplayed = true;
+    return this.modalObserv;
   }
 
   hideConfirmationDialog(): void {
