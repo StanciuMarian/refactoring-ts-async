@@ -21,7 +21,8 @@ export class HttpRequestsInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
             //this.catchError() - sau asa ???
             catchError((error: HttpErrorResponse) => {
-                this.toastr.error(error.error.messagekey, error.error.userMessage); //ce punem ca eroare ???
+                // this.toastr.error(error.error.messagekey, error.error.userMessage); //ce punem ca eroare ???
+                this.toastr.error("General error", "Incorrect coupon code"); 
                 return throwError(error);
             })
         );
