@@ -4,9 +4,7 @@
       <div class="col-8 form-group">
         <label for="countrySelect">Select Country</label>
         <select id="countrySelect" [(ngModel)]="selectedCountryIso" name="selectCountry" 
-        (change)="onCountryChanged(this.selectedCountryIso)"
-        class="form-control">
-        <!-- (change)="getCities()" -->
+        (change)="getCities()" class="form-control">
           <option *ngFor="let country of countries" [value]="country.iso">
             {{country.name}}
           </option>
@@ -16,7 +14,7 @@
     <div class="row">
       <div class="col-8 form-group">
         <label for="citySelect">Select city</label>
-        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity">
+        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity" (change)="getStoresByCity()">
           <option *ngFor="let city of cities" [value]="city.id">
             {{city.name}}
           </option>

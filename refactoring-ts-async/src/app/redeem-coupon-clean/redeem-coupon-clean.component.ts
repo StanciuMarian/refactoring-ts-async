@@ -47,7 +47,10 @@ export class RedeemCouponCleanComponent {
 
   getCities(): void {
     this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
-      this.cities = cities;
+      this.cities = cities;      
+      if (!this.cities.find(c => c.id == this.selectedCityId)) {
+        this.selectedCityId = this.cities[0].id;
+      }
       this.getStoresByCity();
     })
   }
