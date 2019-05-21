@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { CountryDto } from '../api/dto/CountryDto';
 import { CityDto } from '../api/dto/CityDto';
 import { StoreDto } from '../api/dto/StoreDto';
@@ -33,60 +33,68 @@ export class RedeemCouponComponent {
             private toastr: Toastr) {}
 
   ngOnInit() {
-      forkJoin(this.userApi.getCurrentUser(),this.api.getAllCountries())
-      .subscribe(data =>{
-        let user = data[0];
-        this.countries = data[1];
-        this.initUserData(user); 
-        this.loadCities();
-      })
+    this.userApi.getCurrentUser().toPromise().then(user => {
+      this.user = user;
+      if (this.countries) this.onReceivedBothCountriesAndUser();
+    })
+    .catch(() => console.log('error on first request'));
+
+    this.api.getAllCountries().toPromise().then(countries => {
+      this.countries = countries;
+      if (this.user) this.onReceivedBothCountriesAndUser();
+    })
+    .catch(() => console.log('error on first request'))
   } 
+  user : UserDto;
 
-  private initUserData(user: UserDto) {
-    this.selectedCountryIso = this.countries.find(c => c.id == user.countryId).iso;
-    this.selectedCityId = user.cityId;
+  onReceivedBothCountriesAndUser() {
+    for (let c of this.countries) {
+      if (c.id == this.user.countryId) {
+        this.selectedCountryIso = c.iso;
+      }
+    }
+    this.api.getCitiesByCountry(this.selectedCountryIso).toPromise()
+      .then(cities => {
+          this.cities = cities;
+          this.selectedCityId = this.user.cityId; 
+          this.api.getStoresByCity(this.selectedCityId).toPromise()
+            .then(stores => {
+              this.stores = stores;
+              this.couponForm.storeId = stores[0].id;
+            })
+            .catch(() => console.log('error on third request'))
+      })
+      .catch(() => console.log('error on second request'))
   }
 
-  loadCities() { 
-    this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
-        this.cities = cities;
-        if (!this.cities.find(c => c.id == this.selectedCityId)) {
+  onCountryChanged(selectedCountryIso:string) { 
+    this.api.getCitiesByCountry(selectedCountryIso).toPromise()
+      .then(cities => {
+          this.cities = cities;
           this.selectedCityId = cities[0].id;
-        }
-        this.loadStores();
-    });
+          this.api.getStoresByCity(this.selectedCityId).toPromise()
+            .then(stores => {
+              this.stores = stores;
+              this.couponForm.storeId = stores[0].id;
+            })
+            .catch(() => console.log('error on third request'))
+      })
+      .catch(() => console.log('error on second request'))
+
   }
 
-  loadStores() {
-    this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
-        this.stores = stores;
-        this.couponForm.storeId = stores[0].id;
-      });
-  }
-
-  async validateBF() {      
-    await this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).toPromise();
-    this.showConfirmationDialog();
-    await this.getPromiseForClick();
-    this.hideConfirmationDialog();
-    this.couponCode = await this.api.requestCoupon(this.couponForm).toPromise();
-    this.toastr.success("Success", `Your redeem code is ${this.couponCode}`);
-  }
-
-
-  @ViewChild('yesButton') yesButton: ElementRef;
-
-  getPromiseForClick() {
-    return new Promise(success => {
-      this.yesButton.nativeElement.onclick = success;
+  validateBF(): void {   
+    this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).subscribe(response => {
+      this.isConfirmationDialogDisplayed = true;
     })
   }
 
-  hideConfirmationDialog() {
+  redeemCoupon(): void {
     this.isConfirmationDialogDisplayed = false;
-  }
-  showConfirmationDialog() {
-    this.isConfirmationDialogDisplayed = true;
+    this.api.requestCoupon(this.couponForm).subscribe((redeemCode) => {
+      this.toastr.success("Success", `Your redeem code is ${redeemCode}`);
+      this.couponCode = redeemCode;
+    })
   }
 
 
