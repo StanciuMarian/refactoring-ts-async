@@ -80,7 +80,7 @@ export class RedeemCouponComponent {
     this.isConfirmationDialogDisplayed = true;
     await this.waitForYes();
     this.isConfirmationDialogDisplayed = false;
-    this.api.requestCoupon(this.couponForm).subscribe(coupon => this.couponCode =coupon);
+    this.couponCode = await this.api.requestCoupon(this.couponForm).toPromise();
   }
 
 
