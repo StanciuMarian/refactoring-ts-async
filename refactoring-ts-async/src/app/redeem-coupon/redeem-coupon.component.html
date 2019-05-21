@@ -2,9 +2,9 @@
   <form>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="countrySelect">Select Country</label>
+        <label for="countrySelect">Country:</label>
         <select id="countrySelect" [(ngModel)]="selectedCountryIso" name="selectCountry" 
-        (change)="onCountryChanged(this.selectedCountryIso)"
+        (change)="loadCitiesByCurrentCountry()"
         class="form-control">
         <!-- (change)="getCities()" -->
           <option *ngFor="let country of countries" [value]="country.iso">
@@ -15,8 +15,9 @@
     </div>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="citySelect">Select city</label>
-        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity">
+        <label for="citySelect">City:</label>
+        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity"
+        (change)="loadStoresByCurrentCity()">
           <option *ngFor="let city of cities" [value]="city.id">
             {{city.name}}
           </option>
@@ -25,7 +26,7 @@
     </div>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="storeSelect">Select Operation</label>
+        <label for="storeSelect">Store:</label>
         <select id="storeSelect" [(ngModel)]="couponForm.storeId" class="form-control" name="selectForStores">
           <option *ngFor="let store of stores" [value]="store.id">
             {{store.nameWithType()}}
@@ -35,7 +36,7 @@
     </div>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="bfInput">Cod bon fiscal</label>
+        <label for="bfInput">Bill ID</label>
         <input [(ngModel)]="couponForm.bf" name="couponBf" class="form-control" id="bfInput">
       </div>
     </div>

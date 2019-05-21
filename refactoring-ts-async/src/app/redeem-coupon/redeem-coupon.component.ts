@@ -33,54 +33,45 @@ export class RedeemCouponComponent {
             private toastr: Toastr) {}
 
   ngOnInit() {
-    this.userApi.getCurrentUser().toPromise().then(user => {
-      this.user = user;
-      if (this.countries) this.onReceivedBothCountriesAndUser();
-    })
-    .catch(() => console.log('error on first request'));
+    // this.userApi.getCurrentUser().toPromise().then(user => {
+    //   this.user = user;
+    //   if (this.countries) this.onReceivedBothCountriesAndUser();
+    // })
+    // .catch(() => console.log('error on first request'));
 
-    this.api.getAllCountries().toPromise().then(countries => {
-      this.countries = countries;
-      if (this.user) this.onReceivedBothCountriesAndUser();
-    })
-    .catch(() => console.log('error on first request'))
+    // this.api.getAllCountries().toPromise().then(countries => {
+    //   this.countries = countries;
+    //   if (this.user) this.onReceivedBothCountriesAndUser();
+    // })
+    // .catch(() => console.log('error on first request'))
+
+    forkJoin(this.userApi.getCurrentUser(),  this.api.getAllCountries()).subscribe(dtos => {
+      this.user = dtos[0];
+      this.countries = dtos[1];
+      this.onReceivedBothCountriesAndUser();
+    });
   } 
   user : UserDto;
 
   onReceivedBothCountriesAndUser() {
-    for (let c of this.countries) {
-      if (c.id == this.user.countryId) {
-        this.selectedCountryIso = c.iso;
-      }
-    }
-    this.api.getCitiesByCountry(this.selectedCountryIso).toPromise()
-      .then(cities => {
-          this.cities = cities;
-          this.selectedCityId = this.user.cityId; 
-          this.api.getStoresByCity(this.selectedCityId).toPromise()
-            .then(stores => {
-              this.stores = stores;
-              this.couponForm.storeId = stores[0].id;
-            })
-            .catch(() => console.log('error on third request'))
-      })
-      .catch(() => console.log('error on second request'))
+    this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryId).iso;
+
+    this.loadCitiesByCurrentCountry();
   }
 
-  onCountryChanged(selectedCountryIso:string) { 
-    this.api.getCitiesByCountry(selectedCountryIso).toPromise()
-      .then(cities => {
-          this.cities = cities;
-          this.selectedCityId = cities[0].id;
-          this.api.getStoresByCity(this.selectedCityId).toPromise()
-            .then(stores => {
-              this.stores = stores;
-              this.couponForm.storeId = stores[0].id;
-            })
-            .catch(() => console.log('error on third request'))
-      })
-      .catch(() => console.log('error on second request'))
+  loadCitiesByCurrentCountry() { 
+    this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
+        this.cities = cities;
+        this.selectedCityId = cities[0].id;
+        this.loadStoresByCurrentCity();
+    })
+  }
 
+  loadStoresByCurrentCity() {
+    this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
+      this.stores = stores;
+      this.couponForm.storeId = stores[0].id;
+    });
   }
 
   validateBF(): void {   

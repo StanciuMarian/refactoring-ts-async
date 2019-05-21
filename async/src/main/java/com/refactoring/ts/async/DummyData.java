@@ -20,7 +20,7 @@ import com.refactoring.ts.async.repositories.CityRepository;
 import com.refactoring.ts.async.repositories.UserRepository;
 
 @Component
-public class CommandRunner implements CommandLineRunner {
+public class DummyData implements CommandLineRunner {
 
 	@Autowired
 	private UserRepository userRepo;
@@ -33,19 +33,19 @@ public class CommandRunner implements CommandLineRunner {
 		Country romania = new Country("Romania")
 			.setIso("RO")
 			.addCity(new City("Bucharest")
-					.addStore(new Store("SmartStore Militari", Type.MEDIUM))
-					.addStore(new Store("SmartStore Metrou Politehnica", Type.SMALL))
-					.addStore(new Store("SmartStore Military Residence", Type.LARGE))
+					.addStore(new Store("Bucharest Militari", Type.MEDIUM))
+					.addStore(new Store("Bucharest Metrou Politehnica", Type.SMALL))
+					.addStore(new Store("Bucharest Military Residence", Type.LARGE))
 					)
 			.addCity(new City("Ploiesti")
-					.addStore(new Store("SmartStore Gara de Sud", Type.MEDIUM))
-					.addStore(new Store("SmartStore A7 #sîeu", Type.LARGE)));
+					.addStore(new Store("Gara de Sud", Type.MEDIUM))
+					.addStore(new Store("A7 #sîeu", Type.LARGE)));
 		Country hungary = new Country("Hungary")
 				.setIso("HU")
 				.addCity(new City("Budapesta")
-						.addStore(new Store("SmartStore Budapesta North Train Station", Type.MEDIUM))
-						.addStore(new Store("SmartStore Kaszásdűlő", Type.LARGE))
-						.addStore(new Store("SmartStore Liszt Ferenc Airport", Type.SMALL))
+						.addStore(new Store("Budapesta North Train Station", Type.MEDIUM))
+						.addStore(new Store("Budapesta Kaszásdűlő", Type.LARGE))
+						.addStore(new Store("Budapesta Liszt Ferenc Airport", Type.SMALL))
 						);
 		
 		countryRepo.saveAll(asList(romania, hungary));
