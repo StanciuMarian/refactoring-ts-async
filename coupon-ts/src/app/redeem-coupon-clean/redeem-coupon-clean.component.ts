@@ -6,8 +6,6 @@ import { UserDto } from '../api/dto/UserDto';
 import { CouponForm } from '../api/dto/CouponForm';
 import { AppApi } from '../api/app-api';
 import { UserApi } from '../api/user-api';
-import { forkJoin, Observable, observable, fromEvent, Subject } from 'rxjs';
-import { Toastr } from '../services/toastr.service';
 
 @Component({
   selector: 'redeem-coupon-form',
@@ -19,73 +17,55 @@ export class RedeemCouponCleanComponent {
   cities: CityDto[] = [];
   stores: StoreDto[] = [];
 
-  coupon = new CouponForm();
-  selectedCountryIso: string;
+  couponForm = new CouponForm();
+  
+  // not part of the submitted form:
+  selectedCountryIso: string; 
   selectedCityId: number;
+  user : UserDto;
+
+  returnedCouponCode: string; // result from server to display
 
   isConfirmationDialogDisplayed = false;
 
-  @ViewChild("yesButton")
-  yesButton : ElementRef;
+  constructor(private api: AppApi, private userApi: UserApi) {}
 
-  constructor(private api: AppApi,
-            private userApi: UserApi,
-            private toastr: Toastr) {}
+  async ngOnInit() {
+    [this.user, this.countries] = await Promise.all([
+      this.userApi.getCurrentUser().toPromise(),  
+      this.api.getAllCountries().toPromise()]);
+    this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryId).iso;
+    this.loadCitiesByCurrentCountry(); 
+  } 
 
-  ngOnInit(): void {
-    forkJoin(this.userApi.getCurrentUser(), this.api.getAllCountries()).subscribe(data => {
-      this.countries = data[1];   
-      this.initCurrentUser(data[0]);
-      this.getCities();
+  loadCitiesByCurrentCountry() { 
+    this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
+        this.cities = cities;
+        this.selectedCityId = cities[0].id;
+        this.loadStoresByCurrentCity();
     });
   }
 
-  initCurrentUser(currentUser: UserDto) {
-    this.selectedCountryIso = this.countries.find(country => country.id == currentUser.countryId).iso;
-    this.selectedCityId = currentUser.cityId;
-  }
-
-  getCities(): void {
-    this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
-      this.cities = cities;      
-      if (!this.cities.find(c => c.id == this.selectedCityId)) {
-        this.selectedCityId = this.cities[0].id;
-      }
-      this.getStoresByCity();
-    })
-  }
-
-  getStoresByCity(): void {
+  loadStoresByCurrentCity() {
     this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
       this.stores = stores;
-      this.coupon.storeId = stores[0].id;
+      this.couponForm.storeId = stores[0].id;
     });
   }
 
-
-  async validateBF() {
-    await this.api.checkBF(this.coupon.bf, this.coupon.storeId).toPromise();
-    this.showConfirmationDialog();
-    await this.waitForYes();
-    const redeemCode = await this.api.requestCoupon(this.coupon).toPromise();
-    this.toastr.success("Success", `Your redeem code is ${redeemCode}`);
-    this.hideConfirmationDialog();  
-  }
-
-  yesSubject = new Subject();
-
-  async waitForYes() {
-    return new Promise((success, error) => {
-      this.yesButton.nativeElement.onclick = success;
-      // this.yesButton.nativeElement.addEventListener("click", success);
-    });
-  }
-
-  showConfirmationDialog() {
+  async onSubmitClick() {   
+    await this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise();
     this.isConfirmationDialogDisplayed = true;
+    await this.waitForYes();
+    this.isConfirmationDialogDisplayed = false;
+    this.returnedCouponCode = await this.api.requestCoupon(this.couponForm).toPromise();
   }
 
-  hideConfirmationDialog(): void {
-    this.isConfirmationDialogDisplayed = false;
+  @ViewChild("yesButton")
+  yesButton : ElementRef;
+  
+  async waitForYes() {
+    return new Promise(success => this.yesButton.nativeElement.onclick = success);
   }
+
 }

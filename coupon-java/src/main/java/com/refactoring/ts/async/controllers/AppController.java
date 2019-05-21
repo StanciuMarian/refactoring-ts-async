@@ -60,16 +60,16 @@ public class AppController {
 	}
 	
 	
-	@GetMapping("/checkBF")
-	public void checkBF(@RequestParam String bf, @RequestParam long storeId) {
-		if (!couponService.validateBF(bf, storeId)) {
+	@GetMapping("/validateReceiptId")
+	public void validateReceiptId(@RequestParam String bf, @RequestParam long storeId) {
+		if (!couponService.validateReceiptId(bf, storeId)) {
 			throw new IllegalArgumentException();
 		}
 	}
 	
 	@PostMapping("/coupon")
 	public String requestCoupon(@RequestBody CouponForm form) {
-		if (!couponService.validateBF(form.receiptId, form.storeId)) {
+		if (!couponService.validateReceiptId(form.receiptId, form.storeId)) {
 			throw new IllegalArgumentException();
 		}
 		return couponService.generateCoupon(form.receiptId, form.cnp);

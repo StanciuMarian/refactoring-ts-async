@@ -53,11 +53,11 @@
     </div>
     <div class="row">
       <div class="col-8">
-        <button type="button" class="btn btn-primary" (click)="validateBF()">
+        <button type="button" class="btn btn-primary" (click)="onSubmitClick()">
           Submit
         </button>
         <button type="button" class="btn btn-secondary ml-2">
-          Reinit
+          Reset
         </button>
       </div>
     </div>   
@@ -65,7 +65,7 @@
 </div>
 
 <p-dialog [(visible)]="isConfirmationDialogDisplayed" [modal]="true">
-  You are about to redeem a coupon for ticket {{couponForm.bf}}. Are you sure?
+  You are about to redeem a coupon for receipt {{couponForm.receiptId}}. Are you sure?
   <p-footer>
     <button #yesButton class="btn btn-primary">
       Yes

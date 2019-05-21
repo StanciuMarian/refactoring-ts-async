@@ -2,9 +2,11 @@
   <form>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="countrySelect">Select Country</label>
+        <label for="countrySelect">Country:</label>
         <select id="countrySelect" [(ngModel)]="selectedCountryIso" name="selectCountry" 
-        (change)="getCities()" class="form-control">
+        (change)="loadCitiesByCurrentCountry()"
+        class="form-control">
+        <!-- (change)="getCities()" -->
           <option *ngFor="let country of countries" [value]="country.iso">
             {{country.name}}
           </option>
@@ -13,8 +15,9 @@
     </div>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="citySelect">Select city</label>
-        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity" (change)="getStoresByCity()">
+        <label for="citySelect">City:</label>
+        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity"
+        (change)="loadStoresByCurrentCity()">
           <option *ngFor="let city of cities" [value]="city.id">
             {{city.name}}
           </option>
@@ -23,8 +26,8 @@
     </div>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="storeSelect">Select Operation</label>
-        <select id="storeSelect" [(ngModel)]="coupon.storeId" class="form-control" name="selectForStores">
+        <label for="storeSelect">Store:</label>
+        <select id="storeSelect" [(ngModel)]="couponForm.storeId" class="form-control" name="selectForStores">
           <option *ngFor="let store of stores" [value]="store.id">
             {{store.nameWithType()}}
           </option>
@@ -33,36 +36,41 @@
     </div>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="bfInput">Cod bon fiscal</label>
-        <input [(ngModel)]="coupon.bf" name="couponBf" class="form-control" id="bfInput">
+        <label for="receiptId">Receipt ID</label>
+        <input [(ngModel)]="couponForm.receiptId" name="receiptId" class="form-control" id="receiptId">
       </div>
     </div>
     <div class="row">
       <div class="col-8 form-group">
         <label for="cnpInput">CNP</label>
-        <input [(ngModel)]="coupon.cnp" name="couponCnp" class="form-control" id="cnpInput">
+        <input [(ngModel)]="couponForm.cnp" name="couponCnp" class="form-control" id="cnpInput">
+      </div>
+    </div>
+    <div class="row" *ngIf="returnedCouponCode">
+      <div class="col-8" >
+       <p class="bg-success center-block" style="padding: 15px; margin: 5px">Your Coupon Code: {{returnedCouponCode}}</p>   
       </div>
     </div>
     <div class="row">
       <div class="col-8">
-        <button type="button" class="btn btn-primary" (click)="validateBF()">
+        <button type="button" class="btn btn-primary" (click)="onSubmitClick()">
           Submit
         </button>
         <button type="button" class="btn btn-secondary ml-2">
-          Reinit
+          Reset
         </button>
       </div>
-    </div>
+    </div>   
   </form>
 </div>
 
 <p-dialog [(visible)]="isConfirmationDialogDisplayed" [modal]="true">
-  You are about to redeem a coupon for ticket {{coupon.bf}}. Are you sure?
+  You are about to redeem a coupon for receipt {{couponForm.receiptId}}. Are you sure?
   <p-footer>
-    <button class="btn btn-primary" #yesButton>
+    <button #yesButton class="btn btn-primary">
       Yes
     </button>
-    <button (click)="hideConfirmationDialog()" class="btn btn-danger">
+    <button (click)="isConfirmationDialogDisplayed = false" class="btn btn-danger">
       No
     </button>
   </p-footer>

@@ -28,14 +28,6 @@ export class AppApi {
      * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
      * 
      */
-    checkBF(bf: string, storeId: number): Observable<void> {
-        return this.http.get<void>(`${constants.APP_ENDPOINT}/checkBF?bf=${bf}&storeId=${storeId}`,{})
-    }
-
-    /**
-     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
-     * 
-     */
     getStoresByCity(cityId: number): Observable<StoreDto[]> {
         return this.http.get<StoreDto[]>(`${constants.APP_ENDPOINT}/cities/${cityId}/stores`,{})
         	.pipe(map(response => response.map(entry => Object.assign(new StoreDto(), entry))))
@@ -65,5 +57,13 @@ export class AppApi {
      */
     requestCoupon(form: CouponForm): Observable<string> {
         return this.http.post(`${constants.APP_ENDPOINT}/coupon`,form,{responseType: 'text'})
+    }
+
+    /**
+     * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
+     * 
+     */
+    validateReceiptId(bf: string, storeId: number): Observable<void> {
+        return this.http.get<void>(`${constants.APP_ENDPOINT}/validateReceiptId?bf=${bf}&storeId=${storeId}`,{})
     }
 }

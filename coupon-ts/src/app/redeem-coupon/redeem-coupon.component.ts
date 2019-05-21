@@ -53,8 +53,8 @@ export class RedeemCouponComponent {
     });
   }
 
-  async validateBF() {   
-    await this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).toPromise();
+  async onSubmitClick() {   
+    await this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise();
     this.isConfirmationDialogDisplayed = true;
     await this.waitForYes();
     this.isConfirmationDialogDisplayed = false;

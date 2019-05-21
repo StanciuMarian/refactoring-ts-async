@@ -16,21 +16,21 @@ public class CouponService {
 	private StoreRepository storeRepo;
 	
 
-	public boolean validateBF(String bf, long storeId) {
+	public boolean validateReceiptId(String receiptId, long storeId) {
 		if (storeRepo.findById(storeId) == null) {
 			return false;
 		}
-		if (bf.length() == 4 && bf.charAt(0) == bf.charAt(3)) { // fake ;P
+		if (receiptId.length() == 4 && receiptId.charAt(0) == receiptId.charAt(3)) { // fake ;P
 			return true; 
 		} else {
 			return false; 
 		}
 	}
 	
-	public String generateCoupon(String bf, String cnp) {
+	public String generateCoupon(String receiptId, String cnp) {
 		try { 
 			MessageDigest md = MessageDigest.getInstance("SHA-512"); 
-			byte[] messageDigest = md.digest((bf+cnp).getBytes()); 
+			byte[] messageDigest = md.digest((receiptId+cnp).getBytes()); 
 			BigInteger no = new BigInteger(1, messageDigest); 
 			String hashtext = no.toString(16); 
 			while (hashtext.length() < 32) { 
