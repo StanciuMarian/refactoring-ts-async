@@ -36,14 +36,19 @@
     </div>
     <div class="row">
       <div class="col-8 form-group">
-        <label for="bfInput">Bill ID</label>
-        <input [(ngModel)]="couponForm.bf" name="couponBf" class="form-control" id="bfInput">
+        <label for="receiptId">Receipt ID</label>
+        <input [(ngModel)]="couponForm.receiptId" name="receiptId" class="form-control" id="receiptId">
       </div>
     </div>
     <div class="row">
       <div class="col-8 form-group">
         <label for="cnpInput">CNP</label>
         <input [(ngModel)]="couponForm.cnp" name="couponCnp" class="form-control" id="cnpInput">
+      </div>
+    </div>
+    <div class="row" *ngIf="returnedCouponCode">
+      <div class="col-8" >
+       <p class="bg-success center-block" style="padding: 15px; margin: 5px">Your Coupon Code: {{returnedCouponCode}}</p>   
       </div>
     </div>
     <div class="row">
@@ -55,19 +60,14 @@
           Reinit
         </button>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-8" >
-       {{couponCode}}
-      </div>
-    </div>
+    </div>   
   </form>
 </div>
 
 <p-dialog [(visible)]="isConfirmationDialogDisplayed" [modal]="true">
   You are about to redeem a coupon for ticket {{couponForm.bf}}. Are you sure?
   <p-footer>
-    <button #yesButton (click)="redeemCoupon()" class="btn btn-primary">
+    <button #yesButton class="btn btn-primary">
       Yes
     </button>
     <button (click)="isConfirmationDialogDisplayed = false" class="btn btn-danger">

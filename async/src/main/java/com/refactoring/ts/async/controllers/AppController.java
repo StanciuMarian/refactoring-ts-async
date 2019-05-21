@@ -69,10 +69,10 @@ public class AppController {
 	
 	@PostMapping("/coupon")
 	public String requestCoupon(@RequestBody CouponForm form) {
-		if (!couponService.validateBF(form.bf, form.storeId)) {
+		if (!couponService.validateBF(form.receiptId, form.storeId)) {
 			throw new IllegalArgumentException();
 		}
-		return couponService.generateCoupon(form.bf, form.cnp);
+		return couponService.generateCoupon(form.receiptId, form.cnp);
 	}
 	
 }

@@ -14,8 +14,6 @@ public class User {
 	
 	private Long countryId;
 
-	private Long cityId;
-	
 	private String cnp;
 	
 	private String fullName;
@@ -34,15 +32,6 @@ public class User {
 
 	public User setCountryId(Long countryId) {
 		this.countryId = countryId;
-		return this;
-	}
-
-	public Long getCityId() {
-		return cityId;
-	}
-
-	public User setCityId(Long cityId) {
-		this.cityId = cityId;
 		return this;
 	}
 

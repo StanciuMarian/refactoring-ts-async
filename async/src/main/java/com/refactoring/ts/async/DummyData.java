@@ -54,7 +54,6 @@ public class DummyData implements CommandLineRunner {
 				.setFullName("Marian Stanciu")
 				.setCnp("1000000123456")
 				.setCountryId(romania.getId())
-				.setCityId(romania.getCities().get(0).getId())
 				);
 	}
 }
