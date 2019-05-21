@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CountryDto } from '../api/dto/CountryDto';
 import { CityDto } from '../api/dto/CityDto';
 import { StoreDto } from '../api/dto/StoreDto';
@@ -9,6 +9,7 @@ import { UserApi } from '../api/user-api';
 import { forkJoin, observable, Observable, Subject } from 'rxjs';
 import { Toastr } from '../services/toastr.service';
 import { mergeMap } from 'rxjs/operators';
+import { Dialog } from 'primeng/dialog';
 
 @Component({
   selector: 'redeem-coupon-form',
@@ -74,19 +75,24 @@ export class RedeemCouponComponent {
     });
   }
 
-  validateBF(): void {   
-    this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).subscribe(response => {
-      this.isConfirmationDialogDisplayed = true;
-    })
+  async validateBF() {   
+    await this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).toPromise();
+    this.isConfirmationDialogDisplayed = true;
+    await this.waitForYes();
+    this.isConfirmationDialogDisplayed = false;
+    this.api.requestCoupon(this.couponForm).subscribe(coupon => this.couponCode =coupon);
   }
 
-  redeemCoupon(): void {
-    this.isConfirmationDialogDisplayed = false;
-    this.api.requestCoupon(this.couponForm).subscribe((redeemCode) => {
-      this.toastr.success("Success", `Your redeem code is ${redeemCode}`);
-      this.couponCode = redeemCode;
-    })
+
+  @ViewChild("yesButton")
+  yesButton : ElementRef;
+  
+  async waitForYes() {
+    return new Promise((success, error) => {
+      this.yesButton.nativeElement.onclick = success;
+    });
   }
+
 
 
 }
