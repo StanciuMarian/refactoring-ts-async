@@ -4,7 +4,7 @@
       <div class="col-8 form-group">
         <label for="countrySelect">Country:</label>
         <select id="countrySelect" [(ngModel)]="selectedCountryIso" name="selectCountry" 
-        (change)="loadCitiesByCurrentCountry()"
+        (change)="loadCitiesByCurrentCountry(selectedCountryIso)"
         class="form-control">
         <!-- (change)="getCities()" -->
           <option *ngFor="let country of countries" [value]="country.iso">
@@ -16,8 +16,7 @@
     <div class="row">
       <div class="col-8 form-group">
         <label for="citySelect">City:</label>
-        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity"
-        (change)="loadStoresByCurrentCity()">
+        <select id="citySelect" [(ngModel)]="selectedCityId" class="form-control" name="selectForCity">
           <option *ngFor="let city of cities" [value]="city.id">
             {{city.name}}
           </option>
@@ -67,7 +66,7 @@
 <p-dialog [(visible)]="isConfirmationDialogDisplayed" [modal]="true">
   You are about to redeem a coupon for receipt {{couponForm.receiptId}}. Are you sure?
   <p-footer>
-    <button #yesButton class="btn btn-primary">
+    <button (click)="redeemCoupon()" class="btn btn-primary">
       Yes
     </button>
     <button (click)="isConfirmationDialogDisplayed = false" class="btn btn-danger">

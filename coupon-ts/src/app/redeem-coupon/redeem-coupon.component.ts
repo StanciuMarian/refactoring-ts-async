@@ -30,42 +30,53 @@ export class RedeemCouponComponent {
 
   constructor(private api: AppApi, private userApi: UserApi) {}
 
-  async ngOnInit() {
-    [this.user, this.countries] = await Promise.all([
-      this.userApi.getCurrentUser().toPromise(),  
-      this.api.getAllCountries().toPromise()]);
-    this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryId).iso;
-    this.loadCitiesByCurrentCountry(); 
+  ngOnInit() {
+    this.userApi.getCurrentUser().subscribe(user => {
+      this.user = user;
+      if (this.countries.length > 0) this.onReceivedBothCountriesAndUser();
+    });
+    this.api.getAllCountries().subscribe(countries => {
+      this.countries = countries;
+      if (this.user) this.onReceivedBothCountriesAndUser();
+    });
   } 
 
-  loadCitiesByCurrentCountry() { 
+  onReceivedBothCountriesAndUser() {
+    this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryId).iso;
+
     this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
-        this.cities = cities;
-        this.selectedCityId = cities[0].id;
-        this.loadStoresByCurrentCity();
+      this.cities = cities;
+      this.selectedCityId = cities[0].id; 
+      this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
+        this.stores = stores;
+        this.couponForm.storeId = stores[0].id;
+      });
     });
   }
 
-  loadStoresByCurrentCity() {
-    this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
-      this.stores = stores;
-      this.couponForm.storeId = stores[0].id;
+  loadCitiesByCurrentCountry(selectedCountryIso:string) { 
+    this.api.getCitiesByCountry(selectedCountryIso).subscribe(cities => {
+      this.cities = cities;
+      this.selectedCityId = cities[0].id;
+      this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
+        this.stores = stores;
+        this.couponForm.storeId = stores[0].id;
+      });
+    });
+
+  }
+
+  onSubmitClick(): void {   
+    this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).subscribe(() => {
+      this.isConfirmationDialogDisplayed = true;
     });
   }
 
-  async onSubmitClick() {   
-    await this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise();
-    this.isConfirmationDialogDisplayed = true;
-    await this.waitForYes();
+  redeemCoupon(): void {
     this.isConfirmationDialogDisplayed = false;
-    this.returnedCouponCode = await this.api.requestCoupon(this.couponForm).toPromise();
-  }
-
-  @ViewChild("yesButton")
-  yesButton : ElementRef;
-  
-  async waitForYes() {
-    return new Promise(success => this.yesButton.nativeElement.onclick = success);
+    this.api.requestCoupon(this.couponForm).subscribe(redeemCode => {
+      this.returnedCouponCode = redeemCode;
+    });
   }
 
 }
