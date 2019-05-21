@@ -75,19 +75,23 @@ export class RedeemCouponComponent {
     });
   }
 
-  async validateBF() {   
-    await this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).toPromise();
-    this.isConfirmationDialogDisplayed = true;
-    await this.waitForYes();
-    this.isConfirmationDialogDisplayed = false;
-    this.couponCode = await this.api.requestCoupon(this.couponForm).toPromise();
+  validateBF() {   
+    this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).toPromise()
+    .then(r => {
+      this.isConfirmationDialogDisplayed = true;
+      this.waitForYes().then(x => {
+        this.isConfirmationDialogDisplayed = false;
+        this.api.requestCoupon(this.couponForm).toPromise().then(code => this.couponCode = code);
+      });
+
+    });
   }
 
 
   @ViewChild("yesButton")
   yesButton : ElementRef;
   
-  async waitForYes() {
+  waitForYes() {
     return new Promise((success, error) => {
       this.yesButton.nativeElement.onclick = success;
     });
