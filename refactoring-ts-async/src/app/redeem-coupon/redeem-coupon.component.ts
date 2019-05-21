@@ -8,7 +8,7 @@ import { AppApi } from '../api/app-api';
 import { UserApi } from '../api/user-api';
 import { forkJoin, observable, Observable, Subject } from 'rxjs';
 import { Toastr } from '../services/toastr.service';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { Dialog } from 'primeng/dialog';
 
 @Component({
@@ -24,6 +24,7 @@ export class RedeemCouponComponent {
   couponForm = new CouponForm();
   selectedCountryIso: string;
   selectedCityId: number;
+  user : UserDto;
 
   couponCode: string; // TODO display in page.
 
@@ -33,22 +34,18 @@ export class RedeemCouponComponent {
             private userApi: UserApi,
             private toastr: Toastr) {}
 
-  ngOnInit() {
-    forkJoin(this.userApi.getCurrentUser(),  this.api.getAllCountries()).subscribe(dtos => {
-      this.user = dtos[0];
-      this.countries = dtos[1];
-      this.onReceivedBothCountriesAndUser();
-    });
-  } 
-  user : UserDto;
-
-  onReceivedBothCountriesAndUser() {
+  async ngOnInit() {
+    [this.user, this.countries] = await Promise.all([this.userApi.getCurrentUser().toPromise(),  this.api.getAllCountries().toPromise()]);
     this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryId).iso;
+    this.loadCitiesByCurrentCountry(); 
+  } 
+  
 
-    this.loadCitiesByCurrentCountry();
-  }
 
   loadCitiesByCurrentCountry() { 
+    this.api.getCitiesByCountry(this.selectedCountryIso).pipe(map(e =>  this.api.getStoresByCity(e[0].id)))
+    .subscribe
+
     this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
         this.cities = cities;
         this.selectedCityId = cities[0].id;
@@ -67,12 +64,11 @@ export class RedeemCouponComponent {
     this.api.checkBF(this.couponForm.bf, this.couponForm.storeId).toPromise()
     .then(r => {
       this.isConfirmationDialogDisplayed = true;
-      this.waitForYes().then(x => {
-        this.isConfirmationDialogDisplayed = false;
-        this.api.requestCoupon(this.couponForm).toPromise().then(code => this.couponCode = code);
-      });
-
-    });
+      return this.waitForYes();
+    }).then(x => {
+      this.isConfirmationDialogDisplayed = false;
+      return this.api.requestCoupon(this.couponForm).toPromise();
+    }).then(code => this.couponCode = code);
   }
 
 
