@@ -34,18 +34,6 @@ export class RedeemCouponComponent {
             private toastr: Toastr) {}
 
   ngOnInit() {
-    // this.userApi.getCurrentUser().toPromise().then(user => {
-    //   this.user = user;
-    //   if (this.countries) this.onReceivedBothCountriesAndUser();
-    // })
-    // .catch(() => console.log('error on first request'));
-
-    // this.api.getAllCountries().toPromise().then(countries => {
-    //   this.countries = countries;
-    //   if (this.user) this.onReceivedBothCountriesAndUser();
-    // })
-    // .catch(() => console.log('error on first request'))
-
     forkJoin(this.userApi.getCurrentUser(),  this.api.getAllCountries()).subscribe(dtos => {
       this.user = dtos[0];
       this.countries = dtos[1];
