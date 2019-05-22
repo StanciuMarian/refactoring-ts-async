@@ -1,5 +1,5 @@
 export class UserDto {
     cnp: string;
-    countryId: number;
+    countryCode: number;
     fullName: string;
 }
