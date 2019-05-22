@@ -55,14 +55,15 @@ export class RedeemCouponComponent {
   }
 
   async onSubmitClick() {   
-    this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise().then(() =>{
+    this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise()
+    .then(() =>{
       this.showConfirmationDialog();
-      this.waitForYes().then(() =>{
-        this.hideConfirmationDialog();
-        this.api.requestCoupon(this.couponForm).toPromise().then(couponCode => {
-          this.returnedCouponCode = couponCode;
-        })
-      });
+      return this.waitForYes();
+    }).then(() =>{
+      this.hideConfirmationDialog();
+      return this.api.requestCoupon(this.couponForm).toPromise();
+    }).then(couponCode => {
+      this.returnedCouponCode = couponCode;
     });
   }
 
