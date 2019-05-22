@@ -31,9 +31,8 @@ export class RedeemCouponComponent {
   constructor(private api: AppApi, private userApi: UserApi) {}
 
   async ngOnInit() {
-    let dtos = await Promise.all([this.userApi.getCurrentUser().toPromise(), this.api.getAllCountries().toPromise()]);
-    let user = dtos[0];
-    this.countries = dtos[1];
+    let user : UserDto;
+    [user, this.countries] = await Promise.all([this.userApi.getCurrentUser().toPromise(), this.api.getAllCountries().toPromise()]);
     this.selectedCountryIso = this.countries.find(c => c.id == user.countryCode).iso;
     this.loadCitiesByCurrentCountry();
   } 
