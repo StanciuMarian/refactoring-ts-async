@@ -55,16 +55,15 @@ export class RedeemCouponComponent {
   }
 
   onSubmitClick(): void {   
-    this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).subscribe(() => {
-      this.showConfirmationDialog();
-    });
+    this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId);
+    this.showConfirmationDialog();
+    // wait for user to click "Yes"
+    this.hideConfirmationDialog();
+    this.returnedCouponCode = this.api.requestCoupon(this.couponForm);
   }
 
   redeemCoupon(): void {
-    this.hideConfirmationDialog();
-    this.api.requestCoupon(this.couponForm).subscribe(redeemCode => {
-      this.returnedCouponCode = redeemCode;
-    });
+   
   }
 
   showConfirmationDialog() {
