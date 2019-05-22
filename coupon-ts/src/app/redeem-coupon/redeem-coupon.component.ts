@@ -63,20 +63,25 @@ export class RedeemCouponComponent {
         this.couponForm.storeId = stores[0].id;
       });
     });
-
   }
 
   onSubmitClick(): void {   
     this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).subscribe(() => {
-      this.isConfirmationDialogDisplayed = true;
+      this.showConfirmationDialog();
     });
   }
 
   redeemCoupon(): void {
-    this.isConfirmationDialogDisplayed = false;
+    this.hideConfirmationDialog();
     this.api.requestCoupon(this.couponForm).subscribe(redeemCode => {
       this.returnedCouponCode = redeemCode;
     });
   }
 
+  showConfirmationDialog() {
+    this.isConfirmationDialogDisplayed = true;
+  }
+  hideConfirmationDialog() {
+    this.isConfirmationDialogDisplayed = false;
+  }
 }
