@@ -35,14 +35,10 @@ export class RedeemCouponComponent {
     forkJoin(this.userApi.getCurrentUser(), this.api.getAllCountries()).subscribe(dtos => {
       this.user = dtos[0];
       this.countries = dtos[1];
-      this.onReceivedBothCountriesAndUser();
+      this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryCode).iso;
+      this.loadCitiesByCurrentCountry();
     });
   } 
-
-  onReceivedBothCountriesAndUser() {
-    this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryCode).iso;
-    this.loadCitiesByCurrentCountry();
-  }
 
   loadCitiesByCurrentCountry() { 
     this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
