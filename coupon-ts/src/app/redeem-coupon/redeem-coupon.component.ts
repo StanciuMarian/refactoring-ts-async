@@ -41,12 +41,7 @@ export class RedeemCouponComponent {
 
   onReceivedBothCountriesAndUser() {
     this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryCode).iso;
-
-    this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
-      this.cities = cities;
-      this.selectedCityId = cities[0].id; 
-      this.loadStoresByCurrentCity();
-    });
+    this.loadCitiesByCurrentCountry();
   }
 
   loadCitiesByCurrentCountry() { 
