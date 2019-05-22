@@ -63,7 +63,7 @@ export class AppApi {
      * DO NOT TOUCH!! Auto-Generated Code! ANY CHANGES WILL BE REVERTED
      * 
      */
-    validateReceiptId(bf: string, storeId: number): Observable<void> {
-        return this.http.get<void>(`${constants.APP_ENDPOINT}/validateReceiptId?bf=${bf}&storeId=${storeId}`,{})
+    validateReceiptId(receiptId: string, storeId: number): Observable<void> {
+        return this.http.get<void>(`${constants.APP_ENDPOINT}/validateReceiptId?receiptId=${receiptId}&storeId=${storeId}`,{})
     }
 }
