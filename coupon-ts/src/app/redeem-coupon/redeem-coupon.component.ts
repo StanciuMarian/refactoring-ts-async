@@ -54,16 +54,19 @@ export class RedeemCouponComponent {
     });
   }
 
-  onSubmitClick(): void {   
-    this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId);
+  async onSubmitClick() {   
+    await this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise();
     this.showConfirmationDialog();
-    // wait for user to click "Yes"
+    await this.waitForYes();
     this.hideConfirmationDialog();
-    this.returnedCouponCode = this.api.requestCoupon(this.couponForm);
+    this.returnedCouponCode = await this.api.requestCoupon(this.couponForm).toPromise();
   }
 
-  redeemCoupon(): void {
-   
+  @ViewChild("yesButton")
+  yesButton: ElementRef;
+
+  waitForYes() {
+    return new Promise(resolve => this.yesButton.nativeElement.onclick = resolve);
   }
 
   showConfirmationDialog() {
