@@ -10,14 +10,12 @@ import { AppComponent } from './app.component';
 import { RedeemCouponComponent } from './redeem-coupon/redeem-coupon.component';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { HttpRequestsInterceptor } from './services/http-interceptor.service';
-import { RedeemCouponCleanComponent } from './redeem-coupon-clean/redeem-coupon-clean.component';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RedeemCouponComponent,
-    RedeemCouponCleanComponent
+    RedeemCouponComponent
   ],
   imports: [
     BrowserModule,
@@ -30,10 +28,6 @@ import { RouterModule } from '@angular/router';
       {
         path: '',
         component: RedeemCouponComponent
-      }, 
-      {
-        path: 'clean',
-        component: RedeemCouponCleanComponent
       }
     ])
   ],
