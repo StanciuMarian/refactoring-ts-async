@@ -6,6 +6,7 @@ import { UserDto } from '../api/dto/UserDto';
 import { CouponForm } from '../api/dto/CouponForm';
 import { AppApi } from '../api/app-api';
 import { UserApi } from '../api/user-api';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'redeem-coupon-form',
@@ -31,13 +32,10 @@ export class RedeemCouponComponent {
   constructor(private api: AppApi, private userApi: UserApi) {}
 
   ngOnInit() {
-    this.userApi.getCurrentUser().subscribe(user => {
-      this.user = user;
-      if (this.countries.length > 0) this.onReceivedBothCountriesAndUser();
-    });
-    this.api.getAllCountries().subscribe(countries => {
-      this.countries = countries;
-      if (this.user) this.onReceivedBothCountriesAndUser();
+    forkJoin(this.userApi.getCurrentUser(), this.api.getAllCountries()).subscribe(dtos => {
+      this.user = dtos[0];
+      this.countries = dtos[1];
+      this.onReceivedBothCountriesAndUser();
     });
   } 
 
