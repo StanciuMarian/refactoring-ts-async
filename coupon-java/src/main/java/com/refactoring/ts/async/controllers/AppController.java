@@ -61,8 +61,8 @@ public class AppController {
 	
 	
 	@GetMapping("/validateReceiptId")
-	public void validateReceiptId(@RequestParam String bf, @RequestParam long storeId) {
-		if (!couponService.validateReceiptId(bf, storeId)) {
+	public void validateReceiptId(@RequestParam String receiptId, @RequestParam long storeId) {
+		if (!couponService.validateReceiptId(receiptId, storeId)) {
 			throw new IllegalArgumentException();
 		}
 	}
