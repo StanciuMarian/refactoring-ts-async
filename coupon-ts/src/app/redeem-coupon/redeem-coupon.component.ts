@@ -23,7 +23,6 @@ export class RedeemCouponComponent {
   // not part of the submitted form:
   selectedCountryIso: string; 
   selectedCityId: number;
-  user : UserDto;
 
   returnedCouponCode: string; // result from server to display
 
@@ -33,9 +32,9 @@ export class RedeemCouponComponent {
 
   ngOnInit() {
     forkJoin(this.userApi.getCurrentUser(), this.api.getAllCountries()).subscribe(dtos => {
-      this.user = dtos[0];
+      let user = dtos[0];
       this.countries = dtos[1];
-      this.selectedCountryIso = this.countries.find(c => c.id == this.user.countryCode).iso;
+      this.selectedCountryIso = this.countries.find(c => c.id == user.countryCode).iso;
       this.loadCitiesByCurrentCountry();
     });
   } 
