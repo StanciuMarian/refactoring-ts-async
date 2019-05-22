@@ -49,8 +49,8 @@ export class RedeemCouponComponent {
     });
   }
 
-  loadCitiesByCurrentCountry(selectedCountryIso:string) { 
-    this.api.getCitiesByCountry(selectedCountryIso).subscribe(cities => {
+  loadCitiesByCurrentCountry() { 
+    this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
       this.cities = cities;
       this.selectedCityId = cities[0].id;
       this.loadStoresByCurrentCity();
