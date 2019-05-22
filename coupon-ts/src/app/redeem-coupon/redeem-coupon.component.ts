@@ -45,10 +45,7 @@ export class RedeemCouponComponent {
     this.api.getCitiesByCountry(this.selectedCountryIso).subscribe(cities => {
       this.cities = cities;
       this.selectedCityId = cities[0].id; 
-      this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
-        this.stores = stores;
-        this.couponForm.storeId = stores[0].id;
-      });
+      this.loadStoresByCurrentCity();
     });
   }
 
@@ -56,10 +53,14 @@ export class RedeemCouponComponent {
     this.api.getCitiesByCountry(selectedCountryIso).subscribe(cities => {
       this.cities = cities;
       this.selectedCityId = cities[0].id;
-      this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
-        this.stores = stores;
-        this.couponForm.storeId = stores[0].id;
-      });
+      this.loadStoresByCurrentCity();
+    });
+  }
+
+  private loadStoresByCurrentCity() {
+    this.api.getStoresByCity(this.selectedCityId).subscribe(stores => {
+      this.stores = stores;
+      this.couponForm.storeId = stores[0].id;
     });
   }
 
