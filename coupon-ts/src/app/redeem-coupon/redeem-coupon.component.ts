@@ -55,11 +55,15 @@ export class RedeemCouponComponent {
   }
 
   async onSubmitClick() {   
-    await this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise();
-    this.showConfirmationDialog();
-    await this.waitForYes();
-    this.hideConfirmationDialog();
-    this.returnedCouponCode = await this.api.requestCoupon(this.couponForm).toPromise();
+    this.api.validateReceiptId(this.couponForm.receiptId, this.couponForm.storeId).toPromise().then(() =>{
+      this.showConfirmationDialog();
+      this.waitForYes().then(() =>{
+        this.hideConfirmationDialog();
+        this.api.requestCoupon(this.couponForm).toPromise().then(couponCode => {
+          this.returnedCouponCode = couponCode;
+        })
+      });
+    });
   }
 
   @ViewChild("yesButton")
